@@ -1,0 +1,14 @@
+
+.resultTbl {
+	border-collapse: collapse;
+	border: thin solid black;
+	font-size: 16pt
+}
+
+.resultTbl TD {
+	border: thin solid black;
+}
+
+CODE {
+	background-color: LemonChiffon;
+}
