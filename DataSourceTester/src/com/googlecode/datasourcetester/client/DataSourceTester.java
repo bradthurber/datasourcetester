@@ -39,13 +39,15 @@ import com.googlecode.datasourcetester.client.rpc.DataSourceTesterServiceAsync;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class DataSourceTester implements EntryPoint {
-	private FlexTable resultTable = new FlexTable();
+	private FlexTable resultTable = null;
 
 	private DialogBox dialogBox = new DialogBox();
 
 	private TextBox txtDataSourceName = new TextBox();
 
 	private TextBox txtQueryText = new TextBox();
+
+	private VerticalPanel vPanel = new VerticalPanel();
 
 	/**
 	 * This is the entry point method.
@@ -55,29 +57,26 @@ public class DataSourceTester implements EntryPoint {
 		txtDataSourceName.setText("java:/DefaultDS");
 		Label lblQueryText = new Label("Test query text:");
 		txtQueryText.setText("SELECT * FROM INFORMATION_SCHEMA.SYSTEM_TABLES");
-		txtQueryText.setWidth("32em");
+		txtQueryText.setWidth("48em");
 		Button button = new Button("Test DataSource");
 		button.addStyleName("btn");
-		
-		resultTable.addStyleName("resultTbl");
 
-		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setWidth("100%");
 		vPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-		
+
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.add(lblDataSourceName);
 		hPanel.add(txtDataSourceName);
 		hPanel.add(lblQueryText);
 		hPanel.add(txtQueryText);
 		vPanel.add(hPanel);
-		vPanel.add(new HTML("<p>Examples of other queries:</p>"+
-				"<p><code>SELECT USERID FROM JMS_USERS</code> (JBoss's default HSQLDB)</p>"+
-				"<p><code>SELECT 1 FROM DUAL</code> (Oracle)</p>"
-				));
-		
+		vPanel
+				.add(new HTML(
+						"<p>Examples of other queries:</p>"
+								+ "<p><code>SELECT USERID FROM JMS_USERS</code> (JBoss's default HSQLDB)</p>"
+								+ "<p><code>SELECT 1 FROM DUAL</code> (Oracle)</p>"));
+
 		vPanel.add(button);
-		vPanel.add(resultTable);
 
 		// Add image and button to the RootPanel
 		RootPanel.get().add(vPanel);
@@ -111,10 +110,12 @@ public class DataSourceTester implements EntryPoint {
 			public void onSuccess(String[][] result) {
 				if (result == null) {
 					showMsg("ERROR: Got empty response.");
-				}
-				for (int i = 0; i < result.length; i++) {
-					for (int j = 0; j < result[i].length; j++) {
-						resultTable.setText(i, j, result[i][j]);
+				} else {
+					resetResultTable();
+					for (int i = 0; i < result.length; i++) {
+						for (int j = 0; j < result[i].length; j++) {
+							resultTable.setText(i, j, result[i][j]);
+						}
 					}
 				}
 			}
@@ -131,5 +132,15 @@ public class DataSourceTester implements EntryPoint {
 		dialogBox.setText(msg);
 		dialogBox.center();
 		dialogBox.show();
+	}
+
+	private void resetResultTable() {
+		if (resultTable != null) {
+			vPanel.remove(resultTable);
+		}
+		resultTable = new FlexTable();
+		resultTable.addStyleName("resultTbl");
+		vPanel.add(resultTable);
+
 	}
 }
