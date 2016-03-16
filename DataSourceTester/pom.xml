@@ -98,7 +98,9 @@
               <!--<module>com.mycompany.gwt.Module</module>-->
             </configuration>
             <goals>
-              <goal>compile</goal>
+              <goal>mergewebxml</goal>
+	      <goal>compile</goal>
+	     <!-- <goal>generateAsync</goal> -->
             </goals>
           </execution>
         </executions>
